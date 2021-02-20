@@ -1,9 +1,7 @@
 import { GetStaticPaths, GetStaticProps } from 'next';
 import dynamic from 'next/dynamic';
-import Link from 'next/link';
 import { useRouter } from 'next/router';
 import PrismicDOM from 'prismic-dom';
-import Prismic from 'prismic-javascript';
 import { Document } from 'prismic-javascript/types/documents';
 import { useCallback, useState } from 'react';
 

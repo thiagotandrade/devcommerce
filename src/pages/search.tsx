@@ -1,6 +1,6 @@
 import { GetServerSideProps } from 'next';
 import Link from 'next/link';
-import { Router, useRouter } from 'next/router';
+import { useRouter } from 'next/router';
 import PrismicDOM from 'prismic-dom';
 import Prismic from 'prismic-javascript';
 import { Document } from 'prismic-javascript/types/documents';
