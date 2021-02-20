@@ -1,25 +1,50 @@
-import { useRouter } from 'next/router';
-import { useCallback, useState } from 'react';
+import { GetStaticPaths, GetStaticProps } from 'next';
 import dynamic from 'next/dynamic';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
+import PrismicDOM from 'prismic-dom';
+import Prismic from 'prismic-javascript';
+import { Document } from 'prismic-javascript/types/documents';
+import { useCallback, useState } from 'react';
+
+import { client } from '@/lib/prismic';
+
+interface ProductProps {
+  product: Document;
+}
 
 const AddToCartModal = dynamic(() => import('@/components/AddToCartModal'), {
   loading: () => <p>Loading...</p>,
   ssr: false,
 });
 
-export default function Product(): JSX.Element {
+export default function Product({ product }: ProductProps): JSX.Element {
   const router = useRouter();
   const [isAddToCartModalVisible, setIsAddToCartModalVisible] = useState(false);
 
-  const handleAddTocart = useCallback(() => {
+  const handleAddToCart = useCallback(() => {
     setIsAddToCartModalVisible(true);
   }, []);
 
+  if (router.isFallback) {
+    return <p>Carregando...</p>;
+  }
+
   return (
     <div>
-      <h1>{router.query.slug}</h1>
+      <h1>{PrismicDOM.RichText.asText(product.data.title)}</h1>
 
-      <button type="button" onClick={handleAddTocart}>
+      <div
+        dangerouslySetInnerHTML={{
+          __html: PrismicDOM.RichText.asHtml(product.data.description),
+        }}
+      />
+
+      <img src={product.data.thumbnail.url} width="300" alt="" />
+
+      <p>Price: ${product.data.price}</p>
+
+      <button type="button" onClick={handleAddToCart}>
         Add to cart
       </button>
 
@@ -27,3 +52,24 @@ export default function Product(): JSX.Element {
     </div>
   );
 }
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  return {
+    paths: [],
+    fallback: true,
+  };
+};
+
+export const getStaticProps: GetStaticProps<ProductProps> = async context => {
+  const { slug } = context.params;
+
+  const product = await client().getByUID('product', String(slug), {});
+
+  return {
+    props: {
+      product,
+    },
+
+    revalidate: 5,
+  };
+};
