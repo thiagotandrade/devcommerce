@@ -46,6 +46,11 @@
       "@typescript-eslint/ban-types": "off",
       "react/react-in-jsx-scope": "off",
       "react/require-default-props": "off",
+      "simple-import-sort/imports": "error",
+      "simple-import-sort/exports": "error",
+      "sort-imports": "off",
+      "import/order": "off",
+      "react/no-danger": "off",
       "@typescript-eslint/explicit-module-boundary-types": "off",
       "@typescript-eslint/explicit-function-return-type": [
         "error",
